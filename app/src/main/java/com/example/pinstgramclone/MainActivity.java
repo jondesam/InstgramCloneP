@@ -7,8 +7,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 import com.shashank.sony.fancytoastlib.FancyToast;
 
@@ -21,6 +23,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button btnSave;
     private EditText editName;
     private EditText editSpeed;
+    private EditText textGetData;
+    private EditText editPower;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,19 +36,44 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         editName = findViewById(R.id.editName);
         editSpeed = findViewById(R.id.speed);
         btnSave.setOnClickListener(MainActivity.this);
+        textGetData = findViewById(R.id.textGetData);
+        editPower = findViewById(R.id.power);
+
+
+        //query from server
+        textGetData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery("Player");
+                parseQuery.getInBackground("0BSyhI5cPd", new GetCallback<ParseObject>() {
+                    @Override
+                    public void done(ParseObject object, ParseException e) {
+                        if (object != null && e == null) {
+
+                            textGetData.setText(object.get("Speed") + "");
+                        } else {
+                            Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+                });
+
+            }
+        });
 
 
 
     }
 
-
+        //input data to server
     @Override
     public void onClick(View v) {
 
 
             ParseObject player = new ParseObject("Player");
             player.put("name", editName.getText().toString());
-            player.put("speed",  editSpeed.getText().toString());
+            player.put("speed", editSpeed.getText().toString());
+            player.put("power", Integer.parseInt( editSpeed.getText().toString()));
 
             player.saveInBackground(new SaveCallback() {
                 @Override
