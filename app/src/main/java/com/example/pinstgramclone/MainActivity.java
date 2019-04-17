@@ -1,6 +1,7 @@
 package com.example.pinstgramclone;
 
 //import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -30,7 +31,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText textGetData;
     private EditText editPower;
     private Button btnAllPlayer;
+
     private String allPlayers;
+    private Button btnSignUp;
 
 
 
@@ -39,13 +42,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
 
+          //  btnSave.setOnClickListener(MainActivity.this);
+
             btnSave = findViewById(R.id.btnSave);
+
+            btnSave.setOnClickListener(MainActivity.this);
+
             editName = findViewById(R.id.editName);
             editSpeed = findViewById(R.id.speed);
-            btnSave.setOnClickListener(MainActivity.this);
             textGetData = findViewById(R.id.textGetData);
             editPower = findViewById(R.id.power);
             btnAllPlayer = findViewById(R.id.btnAllPlayer);
+            btnSignUp = findViewById(R.id.btnSignUp);
+
 
 
             //query from server using getInBackground
@@ -54,6 +63,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 public void onClick(View v) {
 
                     ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery("Player");
+
+
 
                     parseQuery.getInBackground("9BwPB3cbvf", new GetCallback<ParseObject>() {
                         @Override
@@ -80,6 +91,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     allPlayers = "";
                     ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery("Player");
 
+                    //parseQuery.whereGreaterThan("power",100);
+
                     parseQuery.findInBackground(new FindCallback<ParseObject>() {
                         @Override
                         public void done(List<ParseObject> objects, ParseException e) {
@@ -93,11 +106,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                             Toast.LENGTH_LONG,FancyToast.SUCCESS,true).show();
                                 } else {
 
-                                    Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(MainActivity.this, FancyToast.ERROR, Toast.LENGTH_LONG).show();
                                 }
                             }
                         }
                     });
+
+                }
+            });
+
+            btnSignUp.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent = new Intent(MainActivity.this,SignUpActivity.class);
+                    startActivity(intent);
 
                 }
             });
@@ -123,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         FancyToast.makeText(MainActivity.this, "it's fancily saved",
                                 Toast.LENGTH_LONG,FancyToast.SUCCESS,true).show();
                     } else {
-                        Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this, FancyToast.ERROR, Toast.LENGTH_LONG).show();
                     }
                 }
             });
