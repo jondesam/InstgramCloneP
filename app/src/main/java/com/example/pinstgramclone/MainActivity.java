@@ -1,6 +1,7 @@
 package com.example.pinstgramclone;
 
 //import android.support.v7.app.AppCompatActivity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -8,32 +9,24 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.parse.FindCallback;
-import com.parse.GetCallback;
 import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
-import com.parse.SaveCallback;
+import com.parse.ParseUser;
+import com.parse.SignUpCallback;
 import com.shashank.sony.fancytoastlib.FancyToast;
-
-import java.util.List;
-import java.util.jar.Attributes;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 //import java.lang.annotation.Target;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity  {
 
-    private Button btnSave;
-    private EditText editName;
-    private EditText editSpeed;
-    private EditText textGetData;
-    private EditText editPower;
-    private Button btnAllPlayer;
+    private EditText editId;
+    private EditText editPassword;
+    private EditText editEmail;
 
-    private String allPlayers;
-    private Button btnSignUp;
+    private Button logInButton;
+    private Button signUpButton;
+
 
 
 
@@ -41,118 +34,74 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
+            setTitle("Sign Up");
 
           //  btnSave.setOnClickListener(MainActivity.this);
 
-            btnSave = findViewById(R.id.btnSave);
+            editEmail  = findViewById(R.id.editEmail);
+            editPassword = findViewById(R.id.editlogInPasswordActivity);
+            editId = findViewById(R.id.editLoginEmailActivity);
 
-            btnSave.setOnClickListener(MainActivity.this);
+            logInButton = findViewById(R.id.logInButtonGoIntent);
+            signUpButton = findViewById(R.id.SignUpButton);
 
-            editName = findViewById(R.id.editName);
-            editSpeed = findViewById(R.id.speed);
-            textGetData = findViewById(R.id.textGetData);
-            editPower = findViewById(R.id.power);
-            btnAllPlayer = findViewById(R.id.btnAllPlayer);
-            btnSignUp = findViewById(R.id.btnSignUp);
-
+          //  logInButton.setOnClickListener(MainActivity.this);
+           // signUpButton.setOnClickListener(MainActivity.this);
 
 
-            //query from server using getInBackground
-            textGetData.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+        if (ParseUser.getCurrentUser() != null) {
+            ParseUser.getCurrentUser().logOut();
+        }
 
-                    ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery("Player");
+        signUpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                final ParseUser user = new ParseUser();
+                user.setUsername(editId.getText().toString());
+                user.setEmail(editEmail.getText().toString());
+                user.setPassword(editPassword.getText().toString());
+
+                final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
+                progressDialog.setMessage("Signing up " + editId.getText().toString());
+                progressDialog.show();
 
 
+                user.signUpInBackground(new SignUpCallback() {
+                    @Override
+                    public void done(ParseException e) {
 
-                    parseQuery.getInBackground("9BwPB3cbvf", new GetCallback<ParseObject>() {
-                        @Override
-                        public void done(ParseObject object, ParseException e) {
-                            if (object != null && e == null) {
-
-                                textGetData.setText(" name = " + object.get("name") + "" +", " + "power = "+
-                                        object.get("power") + "" + ", " + "speed = " + object.get("speed"));
-                            } else {
-                                Toast.makeText(MainActivity.this, e.getMessage(),
-                                        Toast.LENGTH_LONG).show();
-                            }
-
-                        }
-                    });
-
-                }
-            });
-
-             //query from server using findInBackground
-            btnAllPlayer.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    allPlayers = "";
-                    ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery("Player");
-
-                    //parseQuery.whereGreaterThan("power",100);
-
-                    parseQuery.findInBackground(new FindCallback<ParseObject>() {
-                        @Override
-                        public void done(List<ParseObject> objects, ParseException e) {
-                            if (e == null) {
-                                if (objects.size() > 0) {
-                                    for (ParseObject player: objects) {
-                                        allPlayers = allPlayers + player.get("name") + "\n";
-                                    }
-
-                                    FancyToast.makeText(MainActivity.this, allPlayers,
+                                if (e == null) {
+                                    FancyToast.makeText(MainActivity.this, user.getUsername() + " has signed up!",
                                             Toast.LENGTH_LONG,FancyToast.SUCCESS,true).show();
                                 } else {
-
-                                    Toast.makeText(MainActivity.this, FancyToast.ERROR, Toast.LENGTH_LONG).show();
+                                    Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                                 }
-                            }
-                        }
-                    });
+                                progressDialog.dismiss();
+                    }
+                });
+            }
+        });
 
-                }
-            });
 
-            btnSignUp.setOnClickListener(new View.OnClickListener() {
+
+
+
+            logInButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                    Intent intent = new Intent(MainActivity.this,SignUpActivity.class);
+                    Intent intent = new Intent(MainActivity.this,loginActivity.class);
                     startActivity(intent);
 
                 }
             });
 
 
-    }
-
-        //input data to server
-    @Override
-    public void onClick(View v) {
-
-
-            ParseObject player = new ParseObject("Player");
-            player.put("name", editName.getText().toString());
-            player.put("speed", editSpeed.getText().toString());
-            player.put("power", Integer.parseInt( editPower.getText().toString()));
-
-            player.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    if (e == null) {
-//
-                        FancyToast.makeText(MainActivity.this, "it's fancily saved",
-                                Toast.LENGTH_LONG,FancyToast.SUCCESS,true).show();
-                    } else {
-                        Toast.makeText(MainActivity.this, FancyToast.ERROR, Toast.LENGTH_LONG).show();
-                    }
-                }
-            });
-
 
 
     }
+
+
 }
 
