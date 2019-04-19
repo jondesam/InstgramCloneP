@@ -94,6 +94,8 @@ public class MainActivity extends AppCompatActivity  {
                             if (e == null) {
                                 FancyToast.makeText(MainActivity.this, user.getUsername() + " has signed up!",
                                         Toast.LENGTH_LONG,FancyToast.SUCCESS,true).show();
+
+                                transitionToSocialMediaActivity();
                             } else {
                                 Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                             }
@@ -139,6 +141,11 @@ public class MainActivity extends AppCompatActivity  {
 
 
 
+    }
+
+    public void transitionToSocialMediaActivity(){
+        Intent intent = new Intent(MainActivity.this,SocialMediaActivity.class);
+        startActivity(intent);
     }
 
 

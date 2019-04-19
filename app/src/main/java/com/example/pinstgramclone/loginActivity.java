@@ -2,6 +2,7 @@ package com.example.pinstgramclone;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -59,6 +60,7 @@ public class loginActivity extends AppCompatActivity {
                             if (user != null && e == null) {
                                 FancyToast.makeText(loginActivity.this, user.getUsername() + " has loged in!",
                                         Toast.LENGTH_LONG,FancyToast.SUCCESS,true).show();
+                                transitionToSocialMediaActivity();
 
                             } else {
                                 Toast.makeText(loginActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
@@ -86,6 +88,10 @@ public class loginActivity extends AppCompatActivity {
 
     }
 
+    public void transitionToSocialMediaActivity(){
+        Intent intent = new Intent(loginActivity.this,SocialMediaActivity.class);
+        startActivity(intent);
+    }
 
 
 
