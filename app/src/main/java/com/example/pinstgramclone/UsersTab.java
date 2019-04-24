@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -43,9 +44,11 @@ public class UsersTab extends Fragment {
         arrayList = new ArrayList();
         arrayAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_list_item_1,arrayList);
 
+        final TextView textLoadingUsers = view.findViewById(R.id.textLoadingUsers);
+
         ParseQuery<ParseUser> parseQuery = ParseUser.getQuery();
 
-        parseQuery.whereNotEqualTo("userName", ParseUser.getCurrentUser().getUsername());
+        parseQuery.whereNotEqualTo("username", ParseUser.getCurrentUser().getUsername());
 
         parseQuery.findInBackground(new FindCallback<ParseUser>() {
             @Override
@@ -60,6 +63,8 @@ public class UsersTab extends Fragment {
                         }
 
                         listView.setAdapter(arrayAdapter);
+                        textLoadingUsers.animate().alpha(0).setDuration(2000);
+                        listView.setVisibility(View.VISIBLE);
                     }
                 }
             }
