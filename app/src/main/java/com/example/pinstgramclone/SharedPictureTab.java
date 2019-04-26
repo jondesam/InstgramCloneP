@@ -86,6 +86,7 @@ public class SharedPictureTab extends Fragment implements View.OnClickListener {
                 }
 
                 break;
+
             case R.id.buttonShareImage:
 
                 if (receivedImageBitmap != null) {
@@ -170,7 +171,6 @@ public class SharedPictureTab extends Fragment implements View.OnClickListener {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 2000 && resultCode == Activity.RESULT_OK && data != null) {
-
 
                 //Do something with your captured image.
                 try {

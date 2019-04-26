@@ -82,14 +82,14 @@ public class loginActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
-
     }
+
+
 
     public void transitionToSocialMediaActivity(){
         Intent intent = new Intent(loginActivity.this,SocialMediaActivity.class);
         startActivity(intent);
+        finish();
     }
 
 
